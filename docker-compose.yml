@@ -34,6 +34,7 @@ services:
       - ./users-api:/app
     depends_on:
       - eureka 
+      - postgresdev
     command: './gradlew bootRun'
     environment:
       - GRADLE_USER_HOME=cache
@@ -47,6 +48,7 @@ services:
       - ./songs-api:/app
     depends_on:
       - eureka 
+      - postgresdev
     command: './gradlew bootRun'
     environment:
       - GRADLE_USER_HOME=cache
@@ -59,3 +61,9 @@ services:
      - POSTGRES_PASSWORD=password
      - POSTGRES_USER=postgres
      - POSTGRES_DB=pgdev
+  flyway:
+    image: jimmyoak/flyway:4.0.3
+    command: "wait-for-it --timeout=30  --strict postgres:5432 -- flyway migrate"
+    volumes:
+      - './flyway/conf:/flyway/conf'
+      - './flyway/sql:/flyway/sql'
